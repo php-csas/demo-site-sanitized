@@ -79,17 +79,21 @@
                             <div class="col-lg-3"></div>
                             <div class="col-lg-6">
                                 <div class="form-group">
-                                    <textarea class="form-control" placeholder="Your Message *" value=<?php echo htmlspecialchars($_GET["msg"]);?> name="message" required data-validation-required-message="Please enter a message."></textarea>
+                                    <label class="col-sm-6 control-label" for="formGroupInputSmall">Your Message *</label>
+                                    <textarea class="form-control" <?php if (isset($_GET['msg'])) { echo "placeholder="; echo htmlspecialchars($_GET['msg']);} ?> name="message" required data-validation-required-message="Please enter a message."></textarea>
                                     <p class="help-block text-danger"></p>
                                 </div>
                                 <div class="form-group">
-                                    <input type="url" class="form-control" placeholder="Share a link (optional)" name="link">
+                                    <label class="col-sm-6 control-label" for="formGroupInputSmall">Share a Link</label>
+                                    <input type="url" class="form-control" placeholder="" name="link">
                                     <p class="help-block text-danger"></p>
                                 </div>
                                 <div class="form-group">
-                                    <input type="text" class="form-control" value="<?php echo htmlspecialchars($_GET["name"]);?>" placeholder="Enter your name (optional)" name="commentName">
+                                    <label class="col-sm-6 control-label" for="formGroupInputSmall">Your Name</label>
+                                    <input type="text" class="form-control" placeholder="<?php if (isset($_GET["name"])) { echo htmlspecialchars($_GET["name"]);} ?>" name="commentName">
                                     <p class="help-block text-danger"></p>
                                 </div>
+                            <br /><p style="color: red;">* - Required Field</p><br />
                             </div>
                             <div class="col-lg-3"></div>
                             <div class="clearfix"></div>
@@ -128,17 +132,18 @@
                         if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             $text = $conn->real_escape_string(htmlspecialchars($_POST["message"]));
                             $link = $conn->real_escape_string(htmlspecialchars($_POST["link"]));
+                            $link = $conn->real_escape_string(htmlspecialchars($_POST["commentName"]));
                             $date = date("M j");
                             $time = date("g:ia");
 
-                            $sql = "INSERT INTO post (text, link) VALUES ('$text', '$link')";
+                            $sql = "INSERT INTO post (text, link, name) VALUES ('$text', '$link')";
 
                             if ($conn->query($sql) === FALSE) {
                                 echo "Error: " . $sql . "<br>" . $conn->error;
                             }
                         }
 
-                        $sql = "SELECT text, link, date FROM post ORDER BY date DESC";
+                        $sql = "SELECT text, link, name, date FROM post ORDER BY date DESC";
                         $result = $conn->query($sql);
 
                         if ($result->num_rows > 0) {
@@ -151,6 +156,7 @@
                                 $time = date("g:ia", $timestamp);
                                 $text = $row["text"];
                                 $link = $row["link"];
+                                $name = $row["name"];
 
                                 if ($text) {
                                     echo "<h4 class=\"text-muted\">"; echo "$date at $time:"; echo "</h4>";
@@ -158,6 +164,9 @@
                                 }
                                 if ($link) {
                                     echo "<a href=\""; echo "$link"; echo "\">"; echo "$link"; echo "</a><br>";
+                                }
+                                if ($name) {
+                                    echo "<p>By "; echo "$name"; echo ".";
                                 }
                             }
                         }
