@@ -131,11 +131,11 @@
                         if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             $text = $conn->real_escape_string(htmlspecialchars($_POST["message"]));
                             $link = $conn->real_escape_string(htmlspecialchars($_POST["link"]));
-                            $link = $conn->real_escape_string(htmlspecialchars($_POST["commentName"]));
+                            $name = $conn->real_escape_string(htmlspecialchars($_POST["commentName"]));
                             $date = date("M j");
                             $time = date("g:ia");
 
-                            $sql = "INSERT INTO post (text, link, name) VALUES ('$text', '$link')";
+                            $sql = "INSERT INTO post (text, link, name) VALUES ('$text', '$link', '$name')";
 
                             if ($conn->query($sql) === FALSE) {
                                 echo "Error: " . $sql . "<br>" . $conn->error;
